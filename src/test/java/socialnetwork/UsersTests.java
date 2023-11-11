@@ -3,6 +3,10 @@ package socialnetwork;
 import io.restassured.response.ValidatableResponse;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import static io.restassured.RestAssured.given;
 
 
@@ -13,22 +17,33 @@ public class UsersTests {
     }
 
     String baseURI = "http://localhost:3001/api/";
+    String endpoint = baseURI + "users";
 
 
     @Test
     public void getAllUsers(){
-        String endpoint = baseURI + "users";
+        System.out.println("getAllUsers");
         ValidatableResponse response =
                 given()
                 .when()
                 .get(endpoint)
-                .then();
-        response.log().body();
+                .then().statusCode(200);
     }
 
     @Test
     public void createNewUser(){
-        System.out.println("TODO: createNewUser");
+        System.out.println("createNewUser");
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("username", "Test123ToDelete");
+        payload.put("email", "test123ToDelete@mailinator.com");
+        ValidatableResponse response =
+                given()
+                        .contentType("application/json")
+                        .body(payload)
+                        .when()
+                        .post(endpoint)
+                        .then().statusCode(200);
+        response.log().body();
     }
 
     @Test
@@ -45,12 +60,41 @@ public class UsersTests {
 
     @Test
     public void updateUser(){
-        System.out.println("TODO: updateUser");
+        System.out.println("updateUser");
+        String userId = "654c39fba549bc6f10ccf7a5";
+        String endpoint = baseURI + "users/" + userId;
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("username", "Test123ToDeleteUpdated");
+        payload.put("email", "test123ToDeleteUpdated@mailinator.com");
+        ValidatableResponse response =
+                given()
+                        .contentType("application/json")
+                        .body(payload)
+                        .when()
+                        .put(endpoint)
+                        .then().statusCode(200);
+        response.log().body();
+
     }
 
     @Test
     public void deleteUser(){
-        System.out.println("TODO: deleteUser");
+        System.out.println("deleteUser");
+        System.out.println("updateUser");
+        String userId = "654c39fba549bc6f10ccf7a5";
+        String endpoint = baseURI + "users/" + userId;
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("username", "Test123ToDeleteUpdated");
+        payload.put("email", "test123ToDeleteUpdated@mailinator.com");
+        ValidatableResponse response =
+                given()
+                        .contentType("application/json")
+                        .body(payload)
+                        .when()
+                        .delete(endpoint)
+                        .then().statusCode(200);
+        response.log().body();
     }
+
 
 }
