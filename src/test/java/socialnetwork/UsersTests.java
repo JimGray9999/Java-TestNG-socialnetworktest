@@ -28,6 +28,7 @@ public class UsersTests {
                 .when()
                 .get(endpoint)
                 .then().statusCode(200);
+        response.log().body();
     }
 
     @Test
@@ -80,7 +81,6 @@ public class UsersTests {
     @Test
     public void deleteUser(){
         System.out.println("deleteUser");
-        System.out.println("updateUser");
         String userId = "654c39fba549bc6f10ccf7a5";
         String endpoint = baseURI + "users/" + userId;
         Map<String, Object> payload = new HashMap<>();
