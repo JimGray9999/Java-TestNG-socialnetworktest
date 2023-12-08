@@ -3,6 +3,9 @@ package socialnetwork;
 import io.restassured.response.ValidatableResponse;
 import org.testng.annotations.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static io.restassured.RestAssured.given;
 
 public class ThoughtsTests {
@@ -28,6 +31,23 @@ public class ThoughtsTests {
                         .when()
                         .get(endpoint)
                         .then();
+        response.log().body();
+    }
+
+    @Test
+    public void createThought(){
+        String username = "Jim2345678";
+        String endpoint = baseURI + "thoughts/";
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("username", username);
+        payload.put("thoughtText", "Here is a new thought");
+        ValidatableResponse response =
+                given()
+                        .contentType("application/json")
+                        .body(payload)
+                        .when()
+                        .post(endpoint)
+                        .then().statusCode(200);
         response.log().body();
     }
 
