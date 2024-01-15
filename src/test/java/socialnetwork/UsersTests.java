@@ -1,5 +1,8 @@
 package socialnetwork;
 
+import io.restassured.RestAssured;
+import io.restassured.path.json.JsonPath;
+import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -18,6 +21,7 @@ public class UsersTests {
 
     String baseURI = "http://localhost:3001/api/";
     String endpoint = baseURI + "users";
+    String userId = "";
 
 
     @Test
@@ -28,23 +32,32 @@ public class UsersTests {
                 .when()
                 .get(endpoint)
                 .then().statusCode(200);
+
+        String responseBody = response.extract().body().asString();
+
         response.log().body();
+
     }
 
     @Test
     public void createNewUser(){
         System.out.println("createNewUser");
         Map<String, Object> payload = new HashMap<>();
-        payload.put("username", "Test123ToDelete");
-        payload.put("email", "test123ToDelete@mailinator.com");
-        ValidatableResponse response =
+        payload.put("username", "Test123456ToDelete");
+        payload.put("email", "test123456ToDelete@mailinator.com");
+        ValidatableResponse validatableResponse =
                 given()
                         .contentType("application/json")
                         .body(payload)
                         .when()
                         .post(endpoint)
-                        .then().statusCode(200);
-        response.log().body();
+                        .then()
+                        .statusCode(200);
+
+        String responseBody = validatableResponse.extract().response().getBody().asString();
+        userId = extractUserId(responseBody); // Extract and save the _id
+        System.out.println("User ID Created: " + userId);
+        validatableResponse.extract().response().getBody().prettyPrint();
     }
 
     @Test
@@ -94,6 +107,14 @@ public class UsersTests {
                         .delete(endpoint)
                         .then().statusCode(200);
         response.log().body();
+    }
+
+
+    // Helper methods
+
+    private String extractUserId(String responseBody){
+        JsonPath jsonPath = new JsonPath(responseBody);
+        return jsonPath.get("_id");
     }
 
 
